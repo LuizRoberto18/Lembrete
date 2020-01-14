@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <!-- Meta tags Obrigatórias -->
@@ -12,25 +12,90 @@
 
     <title>Cadastro</title>
     <style>
-        h1{
+        h1 {
             text-align: center;
         }
-        .container{
+
+        .container {
             align-content: center;
         }
     </style>
 
     <script>
-        
+
         function validar() {
-            //validando descricao
+            //contar quantas validacoes corretas
+            var validar = 0;
+
+            //validação do campo Descricao
+
+            var spanDescricao = document.querySelector(".msg_descricao");
             var descricao = document.getElementById("descricao")
-            var descricaoInvalida = document.getElementById(".msg_descricao")
-            if(descricao == ""){
-                spanNomeInvalido.style.display = "none";
+
+            if (descricao.value == "" || descricao.value == null) {
+                console.log(form.descricao.value)
+                spanDescricao.style.display = "inline-block";
                 form.nome.focus();
 
                 return false;
+            } else {
+                spanDescricao.style.display = "none";
+                validar++;
+                if (form.descricao.value.length < 3) {
+                    spanDescricao.style.display = "inline-block";
+                } else {
+                    validar++;
+                    form.nome.focus();
+                    spanDescricao.style.display = "none";
+                }
+
+            }
+
+            //validação do campo textarea
+            var spanTexto = document.querySelector(".msg_texto")
+
+            if (email.value == "") {
+                spanTexto.style.display = "inline-block";
+
+                return false;
+            }
+            else {
+                validar++;
+            }
+
+            //validação do campo Date
+
+            var spanData = document.querySelector(".msg_data")
+            var data = document.querySelector(".data")
+            console.log(data.value)
+            //var data = obj.value;
+            var dia = data.substring(0, 2)
+            var mes = data.substring(3, 5)
+            var ano = data.substring(6, 10)
+
+            //Criando um objeto Date usando os valores ano, mes e dia.
+            var novaData = new Date(ano, (mes - 1), dia);
+
+            var mesmoDia = parseInt(dia, 10) == parseInt(novaData.getDate());
+            var mesmoMes = parseInt(mes, 10) == parseInt(novaData.getMonth()) + 1;
+            var mesmoAno = parseInt(ano) == parseInt(novaData.getFullYear());
+
+            if(mesmoAno == "" || mesmoDia == "" || mesmoMes == ""){
+                spanData.style.display = "inline-block";
+            }else{
+                if (!((mesmoDia) && (mesmoMes) && (mesmoAno))) {
+                alert('Data informada é inválida!');
+                obj.focus();
+                return false;
+            }
+            return true;
+            validar++;
+            }
+           
+
+            //vereicar se todos os campus estão válidos
+            if (validar == 3) {
+                alert("Seu Lembrete foi Salvo com Sucesso");
             }
         }
     </script>
@@ -41,25 +106,31 @@
 
     <div class="container">
 
-        <form method="POST" action="@{/cadastrar}" th:object="${lembrete}">
+        <form id="form" name="form" method="POST" action="/cadastrar" th:object="${lembrete}">
             <div class="col-md-4 mb-3">
                 <label for="descricao">Descrição</label>
-                <input type="text" class="form-control" id="descricao"  placeholder="Descrição" th:field="*{descricao}">
-                <span class="msg_erro msg_descricao">o campo descricao é obrigatorio</span>
+                <input type="text" class="form-control" id="descricao" name="descricao" placeholder="Descrição"
+                    th:field="*{descricao}">
+                <span class="msg_erro msg_descricao" style="display: none" name="span"> O Campo Descrição é
+                    Obrigatorio</span>
             </div>
-    
+
             <div class="col-md-4 mb-3">
                 <label for="lembrete">Lembrete</label>
-                <textarea class="form-control" id="Lembrete" rows="6" maxlenght="5"></textarea>
+                <textarea class="form-control" id="Lembrete" rows="6" maxlenght="5" th:field="*{texto}"></textarea>
+                <span class="msg_erro msg_lembrete" style="display: none" name="span"> O Campo Lembrete é
+                    Obrigatorio</span>
             </div>
-    
+
             <div class="col-md-4 mb-3">
                 <label for="data">Data</label>
-                <input type="date" class="form-control" id="data" placeholder="" value="" >
+                <input type="date" class="form-control" id="data" placeholder="" value="" th:field="*{data}">
+                <span class="msg_erro msg_data" style="display: none" name="span"> O Campo Data é Obrigatorio</span>
             </div>
-    
-            <button type="submit" class="btn btn-primary">Enviar</button>
+
+            <button type="submit" class="btn btn-primary" onclick="return validar()">Enviar</button>
         </form>
+        <button onclick="validar()">Testar</button>
     </div>
     <!-- JavaScript (Opcional) -->
     <!-- jQuery primeiro, depois Popper.js, depois Bootstrap JS -->

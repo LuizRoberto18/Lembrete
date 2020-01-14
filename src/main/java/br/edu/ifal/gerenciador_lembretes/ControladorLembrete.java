@@ -36,7 +36,7 @@ public class ControladorLembrete{
     }
     @RequestMapping("/lista")
 	public ModelAndView listarLembretes(){
-		ModelAndView mv = new ModelAndView("Lista.html");
+		ModelAndView mv = new ModelAndView("lista.html");
 		Iterable<Lembrete> lembretes = repoLembretes.findAll();
 		mv.addObject("alunos", lembretes);
 		return mv;
